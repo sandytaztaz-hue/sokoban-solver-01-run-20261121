@@ -1,2 +1,13 @@
 import f from"fs"
-for(let n=1;n<6;n++){let d="i00"+n,T=f.readFileSync("/input/"+d+"/level.txt","utf8"),w=T.search(/\n/),S=T.replace(/\n/g,""),B=[],p=0;S.replace(/[$*@]/g,(m,i)=>m=="@"?p=i:B.push(i));let H=p/w|0,D=[-w,-1,1,w],L="ulrd",s="",K=B,P,q,k,j,F=(a,g)=>{P=[];q=[a];P[a]=" ";for(let t of q)for(j=0;j<4;j++){let u=t+D[j];if(S[u]!="#"&&!P[u]&&!g(u)){P[u]=P[t]+L[j];q.push(u)}}};while(B.length){F(B[0],u=>(u/w|0)==H);let r=[];B=B.filter(y=>!P[y]||!r.push(y));let o=K.filter(x=>!r.includes(x)),Q=[[r,p,""]],V={[r+","+p]:1},y=0;while(y<Q.length){let[b,pl,mo]=Q[y++];if(b.every(x=>/[.*+]/.test(S[x]))){s+=mo;p=pl;K=o.concat(b);break}let z=b.concat(o);F(pl,u=>z.includes(u));for(let i in b)for(j=0;j<4;j++){let t=b[i]+D[j],u=b[i]-D[j];if((t/w|0)==H||S[t]=="#"||z.includes(t)||!P[u])continue;let c=[...b];c[i]=t;c.sort((a,b)=>a-b);if(!V[k=c+","+b[i]])V[k]=1,Q.push([c,b[i],mo+P[u]+L[j]])}}}f.mkdirSync("/output/"+d,{recursive:!0});f.writeFileSync("/output/"+d+"/solution.txt",s)}
+for(let n=0;++n<6;){let I="/input/i00"+n+"/level.txt",O="/output/i00"+n,T=f.readFileSync(I),w=T.indexOf(10),S=(T+"").replace(/\n/g,""),X=[],p=0,s=""
+S.replace(/[$*@]/g,(m,o)=>m<"@"?X.push(o):p=o)
+let H=p/w|0,D=[[-w,"u"],[-1,"l"],[1,"r"],[w,"d"]],Jp=[],mp
+while(X.length){let b=X[0],J=[],G2=0n,rL=0n,y=2n,q=[b];J[b]=1n
+while(q.length){let t=q.pop();if(S[t]>="*")G2|=J[t];if(S[t]=="$"|S[t]=="*")rL|=J[t];for(let[d]of D){let u=t+d;if((u/w|0)!=H&&S[u]!="#"&&!J[u]){J[u]=y;y+=y;q.push(u)}}}
+X=X.filter(x=>!J[x])
+let Y=[[rL,p,""]],Z=[],V=new Set([rL+","+p])
+while(Y.length||Z.length){let[m,pl,mo]=Y.pop()||(Y=Z.reverse(),Z=[],Y.pop());if((m&G2)==m){s+=mo;p=pl;Jp=J;mp=m;break}
+for(let[d,c]of D){let u=pl+d,lu=J[u]
+if(lu&&m&lu){let lt=J[u+d];if(!lt||m&lt)continue;let v=m^lu^lt;V.has(v+","+u)||(V.add(v+","+u),Z.push([v,u,mo+c]))}
+else if(lu||(u/w|0)==H||Jp[u]&&!(mp&Jp[u])){V.has(m+","+u)||(V.add(m+","+u),Y.push([m,u,mo+c]))}}}}
+f.mkdirSync(O,{recursive:!0});f.writeFileSync(O+"/solution.txt",s)}
