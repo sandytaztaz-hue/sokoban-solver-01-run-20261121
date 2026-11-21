@@ -1,37 +1,30 @@
-f=require('fs')
-for(n=6;--n;){
-g=f.readFileSync('/input/i00'+n+'/level.txt','utf8')
-w=g.indexOf('\n')
-g=g.replace(/\n/g,'')
-d='/output/i00'+n
-P=g.indexOf('@')
-H=P/w|0
-D=[-w,-1,1,w]
-L='ulrd'
-o=''
-V={}
-for(i=0;g[i];i++)if('$*'.includes(g[i])&&!V[i]){
-C=[]
-F=x=>{if(!V[x]&&g[x]!='#'&&~~(x/w)!=H){V[x]=C.push(x);for(u of D)F(x+u)}}
-F(i)
-m=T=0
-C.map((x,j)=>{if(g[x]>'#'){if(g[x]!='.')m|=1<<j;if(g[x]!='$')T|=1<<j}})
-Q=[[m,P,'']]
-S={[m*512+P]:1}
-for([m,p,s] of Q){
-R={[p]:''}
-A=x=>{for(let l=4;l--;)if(!R[y=x+D[l]]&&g[y]!='#'&&!(m>>C.indexOf(y)&1)){R[y]=R[x]+L[l];A(y)}}
-A(p)
-if(!(~m&T)){y=H*w;while(!R[y]&&y<H*w+w)y++;if(R[y]){o+=s+R[y];P=y;break}}
-C.map((x,j)=>{if(m>>j&1)for(k=4;k--;){
-y=x+D[k]
-if(g[y]=='#'||(b=C.indexOf(y))<0||m>>b&1)continue
-z=x-D[k]
-if(R[z]==null)continue
-v=m^1<<j^1<<b
-S[v*512+x]||(S[v*512+x]=Q.push([v,x,s+R[z]+L[k]]))
-}})
+import fs from'fs';
+for(let n=0;++n<6;){
+let s=''+fs.readFileSync(`/input/i00${n}/level.txt`);
+const w=s.search(/\n/);
+s=[...s.replace(/\n/g,'')];
+let p=s.indexOf('@');
+const D=[-w,-1,1,w],L='ulrd';
+let o=`/output/i00${n}`,out='';
+s.forEach((c,i)=>{
+if(c=='$'||c=='*'){
+let I=[],m0=0,mg=0,k=0;
+const F=c=>{if(s[c]=='#'||(c/w|0)==8)return;if(s[c]>'$')mg|=1<<k;if(s[c]>' '&&s[c]<'-')m0|=1<<k;I[c]=k++;s[c]='#';D.map(d=>F(c+d))};
+F(i);
+let B=[[[m0,p,'']]],V={};
+X:for(let d=0;B[d];d++)for(let[m,pl,pa]of B[d]){
+if(m==mg&&(pl/w|0)==8){out+=pa;p=pl;break X}
+let K=m*512+pl;if(V[K])continue;V[K]=1;
+D.forEach((e,j)=>{
+let np=pl+e,b=I[np],nb=np+e,q=I[nb];
+if(b>=0||(np/w|0)==8&&s[np]!='#'){
+if(b>=0&&m>>b&1){if(q>=0&&!(m>>q&1))(B[d+1]=B[d+1]||[]).push([m^1<<b^1<<q,np,pa+L[j]])}
+else B[d].push([m,np,pa+L[j]])
 }
-f.mkdirSync(d,{recursive:!0})
-f.writeFileSync(d+'/solution.txt',o)
-}}
+})
+}
+}
+});
+fs.mkdirSync(o,{recursive:!0});
+fs.writeFileSync(o+'/solution.txt',out);
+}
